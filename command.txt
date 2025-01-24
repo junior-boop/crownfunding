@@ -1,0 +1,5 @@
+npx wrangler d1 migrations create "crownfunding-database" crownfunding_database_migrations
+npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output prisma/migrations/0001_crownfunding_database_migrations.sql
+npx wrangler d1 migrations apply "crownfunding-database" --local
+npx wrangler d1 migrations apply "crownfunding-database" --remote
+npx prisma generate

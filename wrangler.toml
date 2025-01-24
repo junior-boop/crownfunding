@@ -2,7 +2,7 @@ name = "crownfunding-app"
 main = "src/index.ts"
 compatibility_date = "2025-01-23"
 
-# compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = [ "nodejs_compat" ]
 
 # [vars]
 # MY_VAR = "my-variable"
@@ -11,14 +11,16 @@ compatibility_date = "2025-01-23"
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[r2_buckets]]
+binding = "crownfunding_stockage"
+bucket_name = "crownfunding-stockage"
 
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "my-database"
-# database_id = ""
+[[d1_databases]]
+binding = "DB"
+database_name = "crownfunding-database"
+database_id = "ce0c254e-d2c0-4552-8538-caad13e75a01"
+migrations_table = "crownfunding_database_migrations"
+migrations_dir = "prisma/migrations"
 
 # [ai]
 # binding = "AI"

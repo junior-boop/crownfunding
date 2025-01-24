@@ -9,7 +9,22 @@
   "compatibility_date": "2025-01-21",
   "observability": {
     "enabled": true
-  }
+  }, 
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "crownfunding-database",
+      "database_id": "ce0c254e-d2c0-4552-8538-caad13e75a01",
+      "migrations_table": "crownfunding_database_migrations",
+      "migrations_dir": "prisma/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "crownfunding-stockage",
+      "binding": "crownfunding_stockage"
+    }
+  ]
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

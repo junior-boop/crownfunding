@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id                 String           @id @default(uuid())
+  username           String        @unique
+  email              String        @unique
+  passwordHash       String
+  firstName          String?
+  lastName           String?
+  profilePictureUrl  String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  projects           Project[]
+  contributions      Contribution[]
+  comments           Comment[]
+}
+
+model Project {
+  id               String           @id @default(uuid())
+  creatorId        String
+  creator          User          @relation(fields: [creatorId], references: [id])
+  title            String
+  description      String?
+  category         String?
+  goalAmount       Float
+  currentAmount    Float         @default(0)
+  startDate        DateTime
+  endDate          DateTime
+  galleries        Image[]
+  status           ProjectStatus @default(DRAFT)
+  rewards          Reward[]
+  contributions    Contribution[]
+  comments         Comment[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Image {
+  id          String       @id @default(uuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id])
+  imageUrl    String
+  createdAt   DateTime  @default(now())
+}
+
+model Reward {
+  id                  String           @id @default(uuid())
+  projectId           String
+  project             Project       @relation(fields: [projectId], references: [id])
+  title               String
+  description         String?
+  minimumContribution Float
+  limitedQuantity     Int?
+  availableQuantity   Int?
+  contributions       Contribution[]
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model Contribution {
+  id               String             @id @default(uuid())
+  userId           String
+  user             User            @relation(fields: [userId], references: [id])
+  projectId        String
+  project          Project         @relation(fields: [projectId], references: [id])
+  rewardId         String?
+  reward           Reward?         @relation(fields: [rewardId], references: [id])
+  amount           Float
+  contributionDate DateTime        @default(now())
+  status           ContributionStatus @default(PENDING)
+  transaction      Transaction[]
+  createdAt        DateTime        @default(now())
+}
+
+model Transaction {
+  id               String                 @id @default(uuid())
+  contributionId   String
+  contribution     Contribution        @relation(fields: [contributionId], references: [id])
+  paymentMethod    String?
+  transactionDate  DateTime            @default(now())
+  amount           Float
+  status           TransactionStatus   @default(PENDING)
+  createdAt        DateTime            @default(now())
+}
+
+model Comment {
+  id             String       @id @default(uuid())
+  projectId      String
+  project        Project   @relation(fields: [projectId], references: [id])
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  content        String
+  commentDate    DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  FUNDED
+  FAILED
+}
+
+enum ContributionStatus {
+  PENDING
+  CONFIRMED
+  REFUNDED
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
