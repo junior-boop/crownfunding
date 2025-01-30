@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import users from './users'
+import project from './projects'
 
 const apiroute = new Hono<{ Bindings: CloudflareBindings }>()
 
@@ -8,5 +9,6 @@ apiroute.get('/', ({env, text}) => {
 })
 
 apiroute.route('/users', users )
+apiroute.route('/project', project )
 
 export default apiroute;

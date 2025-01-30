@@ -25,12 +25,15 @@ model User {
   projects           Project[]
   contributions      Contribution[]
   comments           Comment[]
+  secretCode         Int?
+  token              String
 }
 
 model Project {
   id               String           @id @default(uuid())
   creatorId        String
   creator          User          @relation(fields: [creatorId], references: [id])
+  images           String
   title            String
   description      String?
   category         String?
@@ -40,7 +43,6 @@ model Project {
   endDate          DateTime
   galleries        Image[]
   status           ProjectStatus @default(DRAFT)
-  rewards          Reward[]
   contributions    Contribution[]
   comments         Comment[]
   createdAt        DateTime      @default(now())
@@ -55,19 +57,6 @@ model Image {
   createdAt   DateTime  @default(now())
 }
 
-model Reward {
-  id                  String           @id @default(uuid())
-  projectId           String
-  project             Project       @relation(fields: [projectId], references: [id])
-  title               String
-  description         String?
-  minimumContribution Float
-  limitedQuantity     Int?
-  availableQuantity   Int?
-  contributions       Contribution[]
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-}
 
 model Contribution {
   id               String             @id @default(uuid())
@@ -75,8 +64,7 @@ model Contribution {
   user             User            @relation(fields: [userId], references: [id])
   projectId        String
   project          Project         @relation(fields: [projectId], references: [id])
-  rewardId         String?
-  reward           Reward?         @relation(fields: [rewardId], references: [id])
+  
   amount           Float
   contributionDate DateTime        @default(now())
   status           ContributionStatus @default(PENDING)
