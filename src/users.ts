@@ -19,6 +19,65 @@ users.get('/', async ({env, json }) => {
     }
 })
 
+users.get('/token', async({json, req, res, env, status}) => {
+    try{
+        const {v} = req.query()
+        const prisma = Prisma(env)
+        
+        const data = await prisma.user.findFirst({
+            where : {
+                token : v
+            }
+        })
+        
+        return json({
+            user : data, 
+            statut : 1
+        })
+    } catch (error) {
+        return json({
+            user : {}, 
+            statut : 4
+        })
+    }
+})
+
+users.post('/login', async({json, status, req, env}) => {
+    const value = req.formData()
+    const prisma = Prisma(env)
+    const data = await prisma.user.findUnique({
+        where : {
+            email : (await value).get("email")?.toString() as string,
+        }
+    })
+
+    console.log(data)
+
+    try{
+    
+        if(data !== null){
+            return json({
+                user : data,
+                statut : 1
+            })
+        } else {
+            return json({
+                user : {},
+                statut : 3
+            })
+        }
+    } catch (error) {
+        return json({
+            error : error, 
+            status : 4
+        })
+    }
+
+    return json({
+        teste : "je suis dans le place"
+    })
+})
+
 users.get('/:id', async ({env, text, req, res, json, status }) => {
     const { id } = req.param()
 
@@ -119,7 +178,7 @@ users.put('/update/password/:id', async ({env, text, req, res, json, status }) =
     }
 })
 
-users.put('/update/userImage/:id', async ({env, text, req, res, json, status }) => {
+users.put('/update/image/:id', async ({env, text, req, res, json, status }) => {
     const { id } = req.param()
     const value = await req.formData()
     const bucket = env.MY_BUCKET
@@ -183,5 +242,6 @@ users.delete('/delete/:id', async ({env, text, req, res, json, status }) => {
 
 
 })
+
 
 export default users;
